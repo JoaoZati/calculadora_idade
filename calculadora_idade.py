@@ -1,5 +1,6 @@
 import tkinter as tk
 from datetime import datetime as dt
+from calculadora_função import calculate_idade
 
 BG_FRAME_IMPUT = '#D9ED92'
 BG_FRAME_NOW = '#b5e48c'
@@ -22,11 +23,10 @@ class CalculadoraIdade:
         self.now = dt.now()
         self.data_now = f"{self.now.day}/{self.now.month}/{self.now.year}"
 
-        self.text_years, self.text_months, self.text_days = [""]*3
-        self.list_texts = [self.text_years, self.text_months, self.text_days]
+        self.list_texts = ['', '', '']
 
         self.frame_input, self.entry_data = self.create_frame_input()
-        self.frame_output = self.create_frame_output()
+        self.frame_output, self.list_label_output, self.button_calc = self.create_frame_output()
 
     def create_frame_input(self):
         frame_input = tk.Frame(self.window, bg=BG_FRAME_IMPUT)
@@ -60,21 +60,29 @@ class CalculadoraIdade:
         [frame_output.columnconfigure(i, weight=1) for i in range(3)]
 
         button_calc = tk.Button(frame_output, text=TEXT_BUTTON_CREATE,
-                                bg=BG_FRAME_NOW)
+                                bg=BG_FRAME_NOW,
+                                command=self.command_calculate_idade)
         button_calc.grid(row=1, column=0, padx=5, pady=5)
 
-        list_names = ['Anos:', 'Meses:', 'Dias:']
+        list_names = ['Dias:', 'Meses:', 'Anos:']
         for indice, value in enumerate(list_names):
             label_name = tk.Label(frame_output, text=value, bg=BG_FRAME_NOW)
             label_name.grid(row=indice, column=1, padx=5, pady=2)
 
-        labels_output = []
+        list_label = []
         for i in range(3):
             label = tk.Label(frame_output, text=self.list_texts[i],
                              bg=BG_FRAME_NOW, width=15)
             label.grid(row=i, column=2)
+            list_label.append(label)
 
-        return frame_output
+        return frame_output, list_label, button_calc
+
+    def command_calculate_idade(self):
+        self.list_texts = calculate_idade(self.data_input.get())
+        for i, value in enumerate(self.list_label_output):
+            value.config(text=self.list_texts[i])
+        pass
 
     def run(self):
         self.window.mainloop()

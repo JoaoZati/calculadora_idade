@@ -76,16 +76,21 @@ def convert_str_int(string: str):
     return list_number[0], list_number[1], list_number[2]
 
 
-def calcular_idade(string_date: str) -> (str, str, str):
+def calculate_idade(string_date: str) -> [str, str, str]:
     day, month, year = convert_str_int(string_date)
     today = dt.now()
-    if validate_date(day, month, year):
-        birth_day = dt(year, month, day)
-        if birth_day > today:
-            return "", "", ""
-        diference = (today - birth_day).days
-        years, days = divmod(diference, 365.2425)
-        months, days = divmod(days, 30.4375)
+    try:
+        if validate_date(day, month, year):
+            birth_day = dt(year, month, day)
+            if birth_day > today:
+                return ["", "", ""]
+            diference = (today - birth_day).days
+            years, days = divmod(diference, 365.2425)
+            months, days = divmod(days, 30.4375)
+            return str(int(days)), str(int(months)), str(int(years))
+        return ["", "", ""]
+    except Exception as e:
+        print(e)
+        return ['', '', '']
 
-        return str(int(days)), str(int(months)), str(int(years))
-    return "", "", ""
+
